@@ -3,11 +3,12 @@ import Cart from './components/Cart/Cart';
 import Layout from './components/Layout/Layout';
 import Products from './components/Shop/Products';
 
-function App() {
-    const isVisible = useSelector(state => state.cart.isvisible)
+function App() {    
+  const showCart = useSelector(state => state.ui.cartIsVisible);
+
   return (
     <Layout>
-     {isVisible && <Cart />}
+      {showCart && <Cart />}
       <Products />
     </Layout>
   );
