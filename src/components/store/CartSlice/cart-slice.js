@@ -3,16 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialCartState = {
     items: [],
     totalQuantity: 0,
-    isVisible: true,
 };
 
 const cartSlice = createSlice({
     name: 'cart',
     initialState: initialCartState,
     reducers: {
-        toggleCartVisible(state) {
-            state.isVisible = !state.isVisible;
-        },
         addItemToCart(state, action) {
             const newItem = action.payload;
             const existingItem = state.items.find((item) => item.id === newItem.id);
