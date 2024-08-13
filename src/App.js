@@ -1,44 +1,45 @@
-import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import Cart from './components/Cart/Cart';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Layout from './components/Layout/Layout';
+import Cart from './components/Cart/Cart';
 import Products from './components/Shop/Products';
 import Notification from './components/Layout/Notification';
+import { fetchCartData, sendCartData } from './components/store/CartSlice/cart-actions';
 
 function App() {
-  const [notification, setNotification] = useState(null);  // Add this line
+  const dispatch = useDispatch();
   const showCart = useSelector((state) => state.ui.cartIsVisible);
   const cart = useSelector((state) => state.cart);
+  const notification = useSelector((state) => state.ui.notification);
+  
+  const [isInitial, setIsInitial] = useState(true); // Define isInitial flag with useState
 
   useEffect(() => {
-    const sendCartData = async () => {
-      setNotification({ status: 'pending', title: 'Sending...', message: 'Sending cart data!' });
+    dispatch(fetchCartData());
+  }, [dispatch]);
 
-      try {
-        const response = await fetch('https://shoping-20fb4-default-rtdb.firebaseio.com/cart.json', {
-          method: 'PUT',
-          body: JSON.stringify(cart),
-        });
-
-        if (!response.ok) {
-          throw new Error('Sending cart data failed.');
-        }
-
-        setNotification({ status: 'success', title: 'Success!', message: 'Sent cart data successfully!' });
-      } catch (error) {
-        setNotification({ status: 'error', title: 'Error!', message: 'Sending cart data failed!' });
-      }
-    };
-
-    sendCartData();
-  }, [cart]);
+  useEffect(() => {
+    if (isInitial) {
+      setIsInitial(false);
+      return;
+    }
+    dispatch(sendCartData(cart));
+  }, [cart, dispatch, isInitial]);
 
   return (
-    <Layout>
-      {notification && <Notification {...notification} />}  {/* Add this line */}
-      {showCart && <Cart />}
-      <Products />
-    </Layout>
+    <>
+      {notification && (
+        <Notification
+          status={notification.status}
+          title={notification.title}
+          message={notification.message}
+        />
+      )}
+      <Layout>
+        {showCart && <Cart />}
+        <Products />
+      </Layout>
+    </>
   );
 }
 

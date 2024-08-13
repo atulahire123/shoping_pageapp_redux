@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: space-between;
   background-color: #252424;
+  margin-top: 3rem; /* Add margin equal to notification height to position header below notification */
 }
 
 .header h1 {
